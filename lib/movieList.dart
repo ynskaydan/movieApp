@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/movieModel.dart';
+import 'package:movie_app/moviePage.dart';
 
 import 'movieProvider.dart';
 
@@ -31,6 +32,13 @@ class _MovieListState extends State<MovieList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
+        title: Text(
+          "Fav Movies on Worldwide",
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
       body: ListView.builder(
         itemCount: movies == null ? 0 : movies.toString().length,
         itemBuilder: (context, index) {
@@ -55,8 +63,64 @@ class MovieTile extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8),
       child: ListTile(
-        onTap: () {},
-        title: Column(children: [
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => moviePage(),
+                // Pass the arguments as part of the RouteSettings. The
+                // DetailScreen reads the arguments from these settings.
+                settings: RouteSettings(
+                  arguments: movies[index],
+                ),
+              ),
+            );
+          },
+          title: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: EdgeInsets.only(right: 4),
+                    child: movies[index].poster_path != null
+                        ? Container(
+                            height: MediaQuery.of(context).size.height / 6,
+                            width: MediaQuery.of(context).size.width / 6,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      MoviesProvider.imagePathPrefix +
+                                          movies[index].poster_path),
+                                  fit: BoxFit.cover),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  blurRadius: 3,
+                                  offset: Offset(1, 3),
+                                )
+                              ],
+                            ))
+                        : Container()),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    movies[index].title,
+                    softWrap: true,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey),
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}/* 
+Column(children: [
           movies[index].poster_path != null
               ? Container(
                   height: MediaQuery.of(context).size.height / 4,
@@ -100,8 +164,4 @@ class MovieTile extends StatelessWidget {
           Divider(
             color: Colors.grey.shade500,
           ),
-        ]),
-      ),
-    );
-  }
-}
+        ]), */
